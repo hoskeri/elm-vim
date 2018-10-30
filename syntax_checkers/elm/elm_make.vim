@@ -19,7 +19,7 @@ endfunction
 call g:SyntasticRegistry.CreateAndRegisterChecker({
 			\ 'filetype': 'elm',
 			\ 'name': 'elm_make',
-			\ 'exec': 'elm-make'})
+			\ 'exec': 'elm'})
 
 let &cpoptions = s:save_cpo
 unlet s:save_cpo

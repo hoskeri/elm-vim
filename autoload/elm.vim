@@ -127,11 +127,11 @@ endf
 function! elm#Syntastic(input) abort
 	let l:fixes = []
 
-	let l:bin = 'elm-make'
+	let l:bin = 'elm make'
 	let l:format = '--report=json'
 	let l:input = shellescape(a:input)
 	let l:output = '--output=' . shellescape(syntastic#util#DevNull())
-	let l:command = l:bin . ' ' . l:format  . ' ' . l:input . ' ' . l:output
+	let l:command = "2>&1 " . l:bin . ' ' . l:format  . ' ' . l:input . ' ' . l:output
 	let l:reports = s:ExecuteInRoot(l:command)
 
 	for l:report in split(l:reports, '\n')
@@ -162,7 +162,7 @@ function! elm#Build(input, output, show_warnings) abort
 	let l:fixes = []
 	let l:rawlines = []
 
-	let l:bin = 'elm-make'
+	let l:bin = 'elm make'
 	let l:format = '--report=json'
 	let l:input = shellescape(a:input)
 	let l:output = '--output=' . shellescape(a:output)
@@ -212,11 +212,11 @@ endf
 
 " Make the given file, or the current file if none is given.
 function! elm#Make(...) abort
-	if elm#util#CheckBin('elm-make', 'http://elm-lang.org/install') ==# ''
+	if elm#util#CheckBin('elm', 'http://elm-lang.org/install') ==# ''
 		return
 	endif
 
-	call elm#util#Echo('elm-make:', 'building...')
+	call elm#util#Echo('elm', 'building...')
 
 	let l:input = (a:0 == 0) ? expand('%:p') : a:1
 	let l:fixes = elm#Build(l:input, g:elm_make_output_file, g:elm_make_show_warnings)
@@ -347,7 +347,7 @@ function! elm#FindRootDirectory() abort
 	if empty(l:elm_root)
 		let l:current_file = expand('%:p')
 		let l:dir_current_file = fnameescape(fnamemodify(l:current_file, ':h'))
-		let l:match = findfile('elm-package.json', l:dir_current_file . ';')
+		let l:match = findfile('elm.json', l:dir_current_file . ';')
 		if empty(l:match)
 			let l:elm_root = ''
 		else
@@ -369,7 +369,7 @@ function! s:ExecuteInRoot(cmd) abort
 
 	try
 		execute l:cd . fnameescape(l:root_dir)
-		let l:out = system(a:cmd)
+		silent let l:out = system(a:cmd)
 	finally
 		execute l:cd . fnameescape(l:current_dir)
 	endtry
